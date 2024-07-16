@@ -24,6 +24,32 @@ jobs:
         run: npm run build
       - name: Run tests
         run: npm run test
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push' && success() }}
+        with:
+          severity: info
+          details: Test Succeeded!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: A new version of Pokedex deployed
+          description: to https://pokedex-i90i.onrender.com by ${{ github.event.head_commit.author.username }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push' && failure() }}
+        with:
+          severity: error
+          details: Test Failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: Build failed
+          description: commit ${{ github.event.head_commit.url }} by ${{ github.event.head_commit.author.username }} broke the build :(
+      - name: Test Cancelled
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push' && cancelled() }}
+        with:
+          severity: warn
+          details: Test Cancelled!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: Test was cancelled!
 
   e2e_test:
     timeout-minutes: 60
