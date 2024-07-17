@@ -2,7 +2,6 @@ name: Health check
 
 on:
   schedule:
-    - cron: '15 * * * *'
 
 jobs:
   url_health_check:
